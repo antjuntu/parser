@@ -1,5 +1,6 @@
 import nltk
 import sys
+import re
 
 TERMINALS = """
 Adj -> "country" | "dreadful" | "enigmatical" | "little" | "moist" | "red"
@@ -24,14 +25,19 @@ parser = nltk.ChartParser(grammar)
 
 def main():
 
-    # If filename specified, read sentence from file
-    if len(sys.argv) == 2:
-        with open(sys.argv[1]) as f:
-            s = f.read()
+    # # If filename specified, read sentence from file
+    # if len(sys.argv) == 2:
+    #     with open(sys.argv[1]) as f:
+    #         s = f.read()
 
-    # Otherwise, get sentence as input
-    else:
-        s = input("Sentence: ")
+    # # Otherwise, get sentence as input
+    # else:
+    #     s = input("Sentence: ")
+
+    # with open('sentences/1.txt') as f:
+    #     s = f.read()
+    # print(s)
+    s = 'A It was Word2people 67 in 22a 7 b77.'
 
     # Convert input into list of words
     s = preprocess(s)
@@ -62,7 +68,15 @@ def preprocess(sentence):
     and removing any word that does not contain at least one alphabetic
     character.
     """
-    raise NotImplementedError
+    nltk.download('punkt_tab')
+    word_list = []
+    pattern = re.compile(r'[a-zA-Z]+')
+    for w in nltk.word_tokenize(sentence):
+        print(w)
+        result = pattern.search(w)
+        if result:
+            word_list.append(w)
+    print(word_list)
 
 
 def np_chunk(tree):
