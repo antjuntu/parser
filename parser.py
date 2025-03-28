@@ -37,6 +37,8 @@ parser = nltk.ChartParser(grammar)
 test1 = 'Holmes sat in the armchair.'
 test2 = 'Holmes sat in the red armchair.'
 test3 = 'Holmes sat in the little red armchair.'
+# test case which failed
+test = 'i had a country walk on thursday and came home in a dreadful mess.'
 """
 def main():
 
@@ -49,7 +51,7 @@ def main():
     # else:
     #     s = input("Sentence: ")
 
-    with open('sentences/4.txt') as f:
+    with open('sentences/7.txt') as f:
         s = f.read()
     #s = input("Sentence: ")
     print(s)
