@@ -16,13 +16,28 @@ V -> "smiled" | "tell" | "were"
 """
 
 NONTERMINALS = """
-S -> N V
+S -> NP VP | S Conj S
+
+NP -> N | Det N | P Det N | AP N | Det Adj N
+PP -> P NP
+VP -> V | V NP | V NP PP | V PP
+AP -> A | A AP
+
+# AP -> A | A AP
+# PP -> P NP
+# NP -> N | Det NP | Det AP N
+# VP -> V | V NP | V NP PP
 """
 
 grammar = nltk.CFG.fromstring(NONTERMINALS + TERMINALS)
 parser = nltk.ChartParser(grammar)
 
-
+# TEST
+"""
+test1 = 'Holmes sat in the armchair.'
+test2 = 'Holmes sat in the red armchair.'
+test3 = 'Holmes sat in the little red armchair.'
+"""
 def main():
 
     # # If filename specified, read sentence from file
@@ -34,13 +49,14 @@ def main():
     # else:
     #     s = input("Sentence: ")
 
-    # with open('sentences/1.txt') as f:
-    #     s = f.read()
-    # print(s)
-    s = 'A It was Word2people 67 in 22a 7 b77.'
+    with open('sentences/4.txt') as f:
+        s = f.read()
+    #s = input("Sentence: ")
+    print(s)
 
     # Convert input into list of words
     s = preprocess(s)
+    print(s)
 
     # Attempt to parse sentence
     try:
@@ -72,11 +88,12 @@ def preprocess(sentence):
     word_list = []
     pattern = re.compile(r'[a-zA-Z]+')
     for w in nltk.word_tokenize(sentence):
-        print(w)
+        w = w.lower()
         result = pattern.search(w)
         if result:
             word_list.append(w)
-    print(word_list)
+    #print(word_list)
+    return word_list
 
 
 def np_chunk(tree):
@@ -86,7 +103,34 @@ def np_chunk(tree):
     whose label is "NP" that does not itself contain any other
     noun phrases as subtrees.
     """
-    raise NotImplementedError
+    chuncks = []
+    print('tree:', tree)
+    print('tree.label():', tree.label())
+    print('Iterate subtrees:')
+    for st in tree.subtrees():
+        print('st:', st)
+        print('label:', st.label())
+        if st.label() == 'NP':
+            print('-> FOUND NP')
+            # Check if there is label NP in some subtree of st
+            np_found = False
+            st_subtrees = [st1 for st1 in st.subtrees()]
+            print('st_subtrees')
+            print(st_subtrees)
+            # st is itself subtree of st!
+            for st1 in st_subtrees[1:]:
+                if st1.label() == 'NP':
+                    print('NP found in subtree')
+                    np_found = True
+            if not np_found:
+                chuncks.append(st)
+            #print('chuncks so far', chuncks)
+        
+        
+        print('leaves:', st.leaves())
+        print('- - - - - - - - - -')
+        
+    return chuncks
 
 
 if __name__ == "__main__":
